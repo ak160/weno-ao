@@ -228,15 +228,15 @@ p_reconstructed = w₀·p₀ + w₁·p₁ + w₂·p₂ + (wₕ/dₕ)·(pₕ - (d
 │                                                                 │
 │  For each row:                                                  │
 │  ┌───────────────────────────────────────────────────────────┐  │
-│  │ 1. Pad signal with edge values (avoid boundary artifacts)│  │
+│  │ 1. Pad signal with edge values (avoid boundary artifacts) │  │
 │  │ 2. Create 5-point sliding windows                         │  │
-│  │ 3. Calculate 3 polynomial reconstructions (p₀, p₁, p₂)   │  │
-│  │ 4. Calculate smoothness indicators (β₀, β₁, β₂, βₕ)     │  │
-│  │ 5. Compute global smoothness τ = |βₕ-β₀|+|βₕ-β₁|+|βₕ-β₂| │  │
-│  │ 6. Calculate adaptive weights (α₀, α₁, α₂, αₕ)          │  │
-│  │ 7. Normalize weights (w₀, w₁, w₂, wₕ)                   │  │
-│  │ 8. Blend: u_mid = Σ wᵢ·pᵢ                                │  │
-│  │ 9. Interleave: [v₀, u_mid, v₁, u_mid, v₂, ...]         │  │
+│  │ 3. Calculate 3 polynomial reconstructions (p₀, p₁, p₂)    │  │
+│  │ 4. Calculate smoothness indicators (β₀, β₁, β₂, βₕ)       │  │
+│  │ 5. Compute global smoothness τ = |βₕ-β₀|+|βₕ-β₁|+|βₕ-β₂|   │  │
+│  │ 6. Calculate adaptive weights (α₀, α₁, α₂, αₕ)            │  │
+│  │ 7. Normalize weights (w₀, w₁, w₂, wₕ)                     │  │
+│  │ 8. Blend: u_mid = Σ wᵢ·pᵢ                                 │  │
+│  │ 9. Interleave: [v₀, u_mid, v₁, u_mid, v₂, ...]            │  │
 │  └───────────────────────────────────────────────────────────┘  │
 └──────────────────────┬───────────────────────────────────────────┘
                        │
