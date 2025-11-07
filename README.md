@@ -286,62 +286,9 @@ alpha_low = d_weights * (1.0 + (tau / (epsilon + b_low))**q)
 
 ---
 
-## 5. COEFFICIENT JUSTIFICATION
+## 5. DECISION PARAMETERS
 
-### 5.1 Polynomial Coefficients
-
-**Derivation Method:** Lagrange Interpolation
-
-For stencil [v₀, v₁, v₂, v₃, v₄] at positions [-2, -1, 0, 1, 2]:
-
-```
-p(x) = Σᵢ vᵢ · Lᵢ(x)
-
-Where Lᵢ(x) = ∏ⱼ≠ᵢ (x - xⱼ)/(xᵢ - xⱼ)
-```
-
-Evaluating at x = 0.5 (midpoint) and extracting coefficients from each L₀.₅, L₁.₅, etc.
-
-**Example for p₁:**
-```
-L₁(0.5) = (0.5+2)(0.5)(0.5-1)(0.5-2) / (-1+2)(-1)(-1-1)(-1-2)
-        = (-1.5)(0.5)(-0.5)(-2.5) / (1)(-1)(-2)(-3)
-        
-After simplification: coefficients [-1/6, 5/6, 1/3, 0, 0]
-```
-
-### 5.2 Smoothness Indicator Coefficients
-
-**Balsara et al. (2016) Optimization:**
-
-| Component | Coefficient | Purpose |
-|-----------|------------|---------|
-| (13/12) in β₀, β₁, β₂ | Standard WENO | Measures curvature |
-| (1/4) in β₀, β₁, β₂ | Standard WENO | Measures slope variation |
-| (1/120) uₓ coefficient | 5th-order FD | First derivative |
-| (1/56) uₓₓ coefficient | 5th-order FD | Second derivative |
-| (13/3) in βₕ | Optimization | Weight balancing |
-| (781/20) in βₕ | Optimization | Higher derivative emphasis |
-
-These values minimize spurious oscillations while maintaining high accuracy in smooth regions.
-
-### 5.3 Ideal Weight Distribution
-
-```
-d₀ + d₁ + d₂ = 0.15625 (low-order budget)
-dₕ = 0.84375           (high-order budget)
-```
-
-**Design Philosophy:**
-- Allocate majority weight (85%) to high-order when smooth
-- Distribute low-order weights symmetrically: 11.25% + 11.25% + 11.25%
-- Allows smooth downweighting of all when discontinuity detected
-
----
-
-## 6. DECISION PARAMETERS
-
-### 6.1 Epsilon (ε = 1e-12)
+### 5.1 Epsilon (ε = 1e-12)
 
 **Function:** Prevent division by zero in weight calculation
 
@@ -354,7 +301,7 @@ dₕ = 0.84375           (high-order budget)
 - Too large: Reduces adaptivity (always uniform weighting)
 - Too small: Causes numerical instability
 
-### 6.2 Power Parameter (q = 2.0)
+### 5.2 Power Parameter (q = 2.0)
 
 **Function:** Control sharpness of weight transitions
 
@@ -371,7 +318,7 @@ dₕ = 0.84375           (high-order budget)
 - Proven effective in literature (Balsara et al., 2016)
 - Empirically produces minimal over/under-shoot
 
-### 6.3 Boundary Handling
+### 5.3 Boundary Handling
 
 ```python
 u_padded = np.pad(u, (2, 2), mode='edge')
@@ -384,9 +331,9 @@ u_padded = np.pad(u, (2, 2), mode='edge')
 
 ---
 
-## 7. 2D APPLICATION STRATEGY
+## 6. 2D APPLICATION STRATEGY
 
-### 7.1 Separable 1D Upscaling
+### 6.1 Separable 1D Upscaling
 
 **Key Insight:** Image upscaling is separable in x and y directions
 
@@ -402,7 +349,7 @@ Step 2: Apply 1D WENO-AO vertically to each column
 
 **Advantage:** Reduces 2D complexity to two 1D problems
 
-### 7.2 Channel Processing
+### 6.2 Channel Processing
 
 **For RGB Images:**
 ```python
@@ -417,7 +364,7 @@ Stack channels: HR = [R_upscaled, G_upscaled, B_upscaled]
 - Allows parallel processing
 - Maintains color integrity
 
-### 7.3 Interleaving Process
+### 6.3 Interleaving Process
 
 **Horizontal Example:**
 ```
@@ -432,9 +379,9 @@ Where xᵢ = reconstructed midpoint value
 ---
 
 
-## 8. EXPERIMENTAL VALIDATION APPROACH
+## 7. EXPERIMENTAL VALIDATION APPROACH
 
-### 8.1 Comparison Baselines
+### 7.1 Comparison Baselines
 
 | Method | Why Compare | Characteristics |
 |--------|------------|-----------------|
@@ -442,7 +389,7 @@ Where xᵢ = reconstructed midpoint value
 | **Bicubic** | Traditional standard | Smooth, some ringing artifacts |
 | **WENO-AO** | Proposed method | High-order, adaptive, edge-preserving |
 
-### 8.2 Evaluation Protocol
+### 7.2 Evaluation Protocol
 
 1. **Quantitative Metrics:**  
    The following metrics are used to objectively measure the performance of the WENO-AO(5,3) based super-resolution model:
@@ -474,5 +421,5 @@ Where xᵢ = reconstructed midpoint value
    - **Blur:** Loss of fine details and edge sharpness.  
    - **Block Artifacts:** Visible discontinuities or grid-like patterns due to interpolation or compression errors.  
 
-## 9 Results
+## 8 Results
 
