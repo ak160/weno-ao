@@ -42,7 +42,7 @@ def get_smoothness_indicators_vec(v):
     b2 = (13/12)*(v2 - 2*v3 + v4)**2 + (1/4)*(3*v2 - 4*v3 + v4)**2
     
     # High-order smoothness indicator (bh)
-    # Coefficients from Balsara et al. (2016)
+    # Coefficients from Balsara et al. (2016) .
     ux  = (1/120) * (11*v0 - 82*v1 + 82*v3 - 11*v4)
     ux2 = (1/56)  * (-3*v0 + 40*v1 - 74*v2 + 40*v3 - 3*v4)
     ux3 = (1/12)  * (-v0 + 2*v1 - 2*v3 + v4)
