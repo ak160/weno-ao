@@ -422,4 +422,41 @@ Where xᵢ = reconstructed midpoint value
    - **Block Artifacts:** Visible discontinuities or grid-like patterns due to interpolation or compression errors.  
 
 ## 8 Results
+### 8.1 On high edge images ```015 urban100 dataset```
+![Full Comparison](weno-ao/weno_comparison_full_015.png)
+![Zoom Comparison](weno-ao/weno_comparison_zoom_015.png)
+### Metrices
+| **Metric** | **Bilinear** | **Bicubic** | **WENO-AO(5,3)** |
+| ---------- | ------------ | ----------- | ---------------- |
+| PSNR (dB)  | 22.77        | 23.00       | **24.94**        |
+| SSIM (%)   | 77.67        | 79.70       | **85.40**        |
+| LPIPS ↓    | 0.2230       | 0.2001      | **0.1968**       |
+| BRISQUE ↓  | 24.14        | 22.85       | **18.22**        |
+| Sharpness  | 252.66       | 337.93      | **1100.63**      |
 
+### 8.2 On high edge images ```001 urban100 dataset```
+![Full Comparison](weno-ao/weno_comparison_full_001.png)
+![Zoom Comparison](weno-ao/weno_comparison_zoom_001.png)
+### Metrices
+| **Metric** | **Bilinear** | **Bicubic** | **WENO-AO(5,3)** | **Ground Truth** |
+| ---------- | ------------ | ----------- | ---------------- | ---------------- |
+| PSNR (dB)  | 25.44        | 25.88       | **26.99**        | —                |
+| SSIM (%)   | 81.79        | 83.80       | **87.53**        | —                |
+| LPIPS ↓    | 0.2214       | 0.1975      | **0.1654**       | —                |
+| BRISQUE ↓  | 38.19        | 32.83       | **26.52**        | **11.13**        |
+| Sharpness  | 141.04       | 194.10      | **630.11**       | **1737.69**      |
+
+### 8.3 On low edge images ```0829x2 Div2k dataset```
+![Full Comparison](weno-ao/weno_comparison_full_0829x2.png)
+![Zoom Comparison](weno-ao/weno_comparison_zoom_0829x2.png)
+### Metrices
+| **Metric** | **Bilinear** | **Bicubic** | **WENO-AO(5,3)** |
+| ---------- | ------------ | ----------- | ---------------- |
+| PSNR (dB)  | 26.62        | 26.71       | **27.61**        |
+| SSIM (%)   | 58.52        | 60.07       | **65.08**        |
+| LPIPS ↓    | 0.3862       | 0.3656      | **0.3431**       |
+| BRISQUE ↓  | 41.86        | 45.87       | **44.37**        |
+| Sharpness  | 53.53        | 70.50       | **214.67**       |
+
+## 9 Conclusion
+Weno-AO perform well compare to other standard method
