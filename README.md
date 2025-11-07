@@ -230,7 +230,7 @@ p_reconstructed = w₀·p₀ + w₁·p₁ + w₂·p₂ + (wₕ/dₕ)·(pₕ - (d
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │ 1. Pad signal with edge values (avoid boundary artifacts) │  │
 │  │ 2. Create 5-point sliding windows                         │  │
-│  │ 3. Calculate 3 polynomial reconstructions (p₀, p₁, p₂)    │  │
+│  │ 3. Calculate polynomial reconstructions (p₀, p₁, p₂)      │  │
 │  │ 4. Calculate smoothness indicators (β₀, β₁, β₂, βₕ)       │  │
 │  │ 5. Compute global smoothness τ = |βₕ-β₀|+|βₕ-β₁|+|βₕ-β₂|   │  │
 │  │ 6. Calculate adaptive weights (α₀, α₁, α₂, αₕ)            │  │
