@@ -285,55 +285,9 @@ alpha_low = d_weights * (1.0 + (tau / (epsilon + b_low))**q)
 **Performance:** ~50-100× speedup vs. loop-based approach
 
 ---
+## 5. 2D APPLICATION STRATEGY
 
-## 5. DECISION PARAMETERS
-
-### 5.1 Epsilon (ε = 1e-12)
-
-**Function:** Prevent division by zero in weight calculation
-
-**Why 1e-12?**
-- Smaller than typical image pixel variation (scale ~1-255)
-- Larger than machine epsilon (~1e-16) for float64
-- Sufficient for numerical stability
-
-**Trade-off:**
-- Too large: Reduces adaptivity (always uniform weighting)
-- Too small: Causes numerical instability
-
-### 5.2 Power Parameter (q = 2.0)
-
-**Function:** Control sharpness of weight transitions
-
-**Effect of q on Behavior:**
-
-| q Value | Effect |
-|---------|--------|
-| q = 1 | Linear scaling (smooth transitions) |
-| q = 2 | Quadratic scaling (moderate sharpening) |
-| q = 4 | Quartic scaling (aggressive sharpening) |
-
-**Why q = 2?**
-- Balances between smooth transitions (q=1) and aggressive suppression (q>3)
-- Proven effective in literature (Balsara et al., 2016)
-- Empirically produces minimal over/under-shoot
-
-### 5.3 Boundary Handling
-
-```python
-u_padded = np.pad(u, (2, 2), mode='edge')
-```
-
-**Why Edge Padding?**
-- Replicates boundary values
-- Prevents artifacts at image borders
-- Alternative: Use reflective padding (less common for images)
-
----
-
-## 6. 2D APPLICATION STRATEGY
-
-### 6.1 Separable 1D Upscaling
+### 5.1 Separable 1D Upscaling
 
 **Key Insight:** Image upscaling is separable in x and y directions
 
@@ -349,7 +303,7 @@ Step 2: Apply 1D WENO-AO vertically to each column
 
 **Advantage:** Reduces 2D complexity to two 1D problems
 
-### 6.2 Channel Processing
+### 5.2 Channel Processing
 
 **For RGB Images:**
 ```python
@@ -364,7 +318,7 @@ Stack channels: HR = [R_upscaled, G_upscaled, B_upscaled]
 - Allows parallel processing
 - Maintains color integrity
 
-### 6.3 Interleaving Process
+### 5.3 Interleaving Process
 
 **Horizontal Example:**
 ```
@@ -379,9 +333,9 @@ Where xᵢ = reconstructed midpoint value
 ---
 
 
-## 7. EXPERIMENTAL VALIDATION APPROACH
+## 6. EXPERIMENTAL VALIDATION APPROACH
 
-### 7.1 Comparison Baselines
+### 6.1 Comparison Baselines
 
 | Method | Why Compare | Characteristics |
 |--------|------------|-----------------|
@@ -389,7 +343,7 @@ Where xᵢ = reconstructed midpoint value
 | **Bicubic** | Traditional standard | Smooth, some ringing artifacts |
 | **WENO-AO** | Proposed method | High-order, adaptive, edge-preserving |
 
-### 7.2 Evaluation Protocol
+### 6.2 Evaluation Protocol
 
 1. **Quantitative Metrics:**  
    The following metrics are used to objectively measure the performance of the WENO-AO(5,3) based super-resolution model:
@@ -421,8 +375,8 @@ Where xᵢ = reconstructed midpoint value
    - **Blur:** Loss of fine details and edge sharpness.  
    - **Block Artifacts:** Visible discontinuities or grid-like patterns due to interpolation or compression errors.  
 
-## 8 Results
-### 8.1 On high edge images ```015 urban100 dataset```
+## 7 Results
+### 7.1 On high edge images ```015 urban100 dataset```
 ![Full Comparison](weno-ao/weno_comparison_full_015.png)
 ![Zoom Comparison](weno-ao/weno_comparison_zoom_015.png)
 ### Metrices
@@ -434,7 +388,7 @@ Where xᵢ = reconstructed midpoint value
 | BRISQUE ↓  | 24.14        | 22.85       | **18.22**        |
 | Sharpness  | 252.66       | 337.93      | **1100.63**      |
 
-### 8.2 On high edge images ```001 urban100 dataset```
+### 7.2 On high edge images ```001 urban100 dataset```
 ![Full Comparison](weno-ao/weno_comparison_full_001.png)
 ![Zoom Comparison](weno-ao/weno_comparison_zoom_001.png)
 ### Metrices
@@ -446,7 +400,7 @@ Where xᵢ = reconstructed midpoint value
 | BRISQUE ↓  | 38.19        | 32.83       | **26.52**        | **11.13**        |
 | Sharpness  | 141.04       | 194.10      | **630.11**       | **1737.69**      |
 
-### 8.3 On low edge images ```0829x2 Div2k dataset```
+### 7.3 On low edge images ```0829x2 Div2k dataset```
 ![Full Comparison](weno-ao/weno_comparison_full_0829x2.png)
 ![Zoom Comparison](weno-ao/weno_comparison_zoom_0829x2.png)
 ### Metrices
@@ -458,5 +412,8 @@ Where xᵢ = reconstructed midpoint value
 | BRISQUE ↓  | 41.86        | 45.87       | **44.37**        |
 | Sharpness  | 53.53        | 70.50       | **214.67**       |
 
-## 9 Conclusion
-Weno-AO perform well compare to other standard method
+## 8 Conclusion
+ WENO-AO methods provide a powerful tool for image upscaling. By leveraging smoothness
+ indicators and adaptive nonlinear weights, they reconstruct HR images from LR inputs with
+ minimal artifacts. The method effectively balances sharpness and smoothness, making it supe
+ rior to traditional interpolation approaches.
