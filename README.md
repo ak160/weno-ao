@@ -258,33 +258,6 @@ p_reconstructed = w₀·p₀ + w₁·p₁ + w₂·p₂ + (wₕ/dₕ)·(pₕ - (d
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 4.2 Vectorization Strategy
-
-**Why Vectorization?**
-- Naive loop-based approach: O(N) iterations × polynomial calculations
-- NumPy vectorization: O(N) operations parallelized across SIMD
-
-**Implementation:**
-
-```python
-# Create all 5-point stencils simultaneously
-v = sliding_window_view(u_padded, 5)[:-1, :]  # Shape: (N, 5)
-
-# Vectorized polynomial calculation (all N points at once)
-p0 = (1/3)*v[:, 0] - (7/6)*v[:, 1] + (11/6)*v[:, 2]
-p1 = (-1/6)*v[:, 1] + (5/6)*v[:, 2] + (1/3)*v[:, 3]
-p2 = (1/3)*v[:, 2] + (5/6)*v[:, 3] - (1/6)*v[:, 4]
-
-# Vectorized smoothness calculation
-b0 = (13/12)*(v[:, 0] - 2*v[:, 1] + v[:, 2])**2 + ...
-
-# Vectorized weight computation
-alpha_low = d_weights * (1.0 + (tau / (epsilon + b_low))**q)
-```
-
-**Performance:** ~50-100× speedup vs. loop-based approach
-
----
 ## 5. 2D APPLICATION STRATEGY
 
 ### 5.1 Separable 1D Upscaling
